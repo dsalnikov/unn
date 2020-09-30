@@ -99,7 +99,7 @@ py_multiply(PyObject* self, PyObject* args)
     return Py_BuildValue("N", out_arr);
 }
 
-static PyMethodDef superfastcode_methods[] = {
+static PyMethodDef unn_methods[] = {
     // The first property is the name exposed to Python, fast_tanh, the second is the C++
     // function name that contains the implementation.
     { "fast_tanh", (PyCFunction)tanh_impl, METH_O, NULL },
@@ -110,18 +110,18 @@ static PyMethodDef superfastcode_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-static struct PyModuleDef superfastcode_module = {
+static struct PyModuleDef unn_module = {
     PyModuleDef_HEAD_INIT,
-    "superfastcode",                        // Module name to use with Python import statements
-    "Provides some functions, but faster",  // Module description
+    "unn",                        // Module name to use with Python import statements
+    "Provides simple C implementation of nn functions",  // Module description
     0,
-    superfastcode_methods                   // Structure that defines the methods of the module
+    unn_methods                   // Structure that defines the methods of the module
 };
 
-PyMODINIT_FUNC PyInit_demo() {
+PyMODINIT_FUNC PyInit_unn() {
     /* return PyModule_Create(&superfastcode_module); */
     PyObject *m;
-    m = PyModule_Create(&superfastcode_module);
+    m = PyModule_Create(&unn_module);
     if (!m) {
         return NULL;
     }

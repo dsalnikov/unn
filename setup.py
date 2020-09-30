@@ -4,12 +4,12 @@ from distutils.core import setup, Extension
 import numpy as np
 
 
-module1 = Extension('demo',
+module1 = Extension('unn',
                     include_dirs=[np.get_include()],
                     sources = ['unnmodule.c'])
 
-setup (name = 'PackageName',
-       version = '1.0',
-       description = 'This is a demo package',
+setup (name = 'unn',
+       version = '0.1',
+       description = '',
        include_dirs = [np.get_include()],
        ext_modules = [module1])
