@@ -6,7 +6,7 @@ import numpy as np
 
 module1 = Extension('unn',
                     include_dirs=[np.get_include()],
-                    sources = ['unnmodule.c'])
+                    sources = ['unnmodule.cpp'])
 
 setup (name = 'unn',
        version = '0.1',

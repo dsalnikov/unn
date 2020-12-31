@@ -2,18 +2,48 @@
 #include <Python.h>
 
 
-
-/* #define NO_IMPORT_ARRAY */
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 /* #include <numpy/ndarraytypes.h> */
 #include <numpy/arrayobject.h>
 
+#include <iostream>
 
-PyObject* tanh_impl(PyObject *self, PyObject* o) {
-    double x = PyFloat_AsDouble(o);
-    double tanh_x = 55. * x;
-    return PyFloat_FromDouble(tanh_x);
+static PyObject*
+py_conv2d(PyObject* self, PyObject* args)
+{
+    PyArrayObject* inp;
+    PyArrayObject* kernel;
+
+    /* Parse arguments from Python:
+       "O!" - PyArrayType (numpy) object */
+    if (!PyArg_ParseTuple(args, "O!O!", &PyArray_Type, &inp, &PyArray_Type, &kernel))
+        return NULL;
+
+
+    int ndim = PyArray_NDIM(inp);
+    npy_intp* inpShape = PyArray_SHAPE(inp);
+    npy_intp* kernelShape = PyArray_SHAPE(inp);
+
+    /*  Compute output shape: */
+    npy_intp* outpShape;
+    //TODO: compute shape
+
+    /*  Create output array: */
+    PyObject* outp = PyArray_ZEROS(ndim, outpShape, NPY_FLOAT, 0);
+
+    float* pInp = (float *)PyArray_DATA(inp);
+    float* pKernel = (float *)PyArray_DATA(kernel);
+    float* pOutp = (float *)PyArray_DATA((PyArrayObject*)outp); //TODO: check this pointer if ok
+
+    /* Call conv2d */
+    /* conv2d(pInp, pKernel, pOutp, ); */
+
+
+    return Py_BuildValue("N", outp);
 }
+
+
+
 
 PyObject* foo(PyObject *self, PyObject *args)
 {
@@ -100,12 +130,11 @@ py_multiply(PyObject* self, PyObject* args)
 }
 
 static PyMethodDef unn_methods[] = {
-    // The first property is the name exposed to Python, fast_tanh, the second is the C++
-    // function name that contains the implementation.
-    { "fast_tanh", (PyCFunction)tanh_impl, METH_O, NULL },
     { "foo", (PyCFunction)foo, METH_VARARGS, NULL},
-    {"multiply", py_multiply, METH_VARARGS, "Multiply two numpy arrays."},
+    { "multiply", py_multiply, METH_VARARGS, "Multiply two numpy arrays."},
 
+    { "conv2d", py_conv2d, METH_VARARGS, "Compute 2d convolution"},
+   
     // Terminate the array with an object containing nulls.
     { NULL, NULL, 0, NULL }
 };
@@ -136,6 +165,4 @@ PyMODINIT_FUNC PyInit_unn() {
     PyModule_AddObject(m, "error", MultiplyError);
 
     return m;
-
 }
-
